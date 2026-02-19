@@ -9,8 +9,14 @@ CACHE_DIR="$PROJECT_ROOT/crates/network-registry/deployment/cache"
 
 echo "Cleaning deployment cache..."
 
+# safety guard: ensure path stays inside repo
+if [[ -z "$PROJECT_ROOT" || ! "$CACHE_DIR" == "$PROJECT_ROOT/"* ]]; then
+    echo "Refusing to delete unsafe path: $CACHE_DIR" >&2
+    exit 1
+fi
+
 if [ -d "$CACHE_DIR" ]; then
-    rm -rf "$CACHE_DIR"
+    rm -rf -- "$CACHE_DIR"
     echo "✓ Removed deployment cache at: $CACHE_DIR"
 else
     echo "⚠ Cache directory does not exist: $CACHE_DIR"
